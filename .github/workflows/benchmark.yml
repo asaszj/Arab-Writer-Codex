@@ -1,0 +1,45 @@
+name: codex-ab-benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Number of internal eval cases"
+        required: false
+        default: "20"
+      model:
+        description: "Optional Codex model slug"
+        required: false
+        default: ""
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require benchmark credential
+        if: ${{ env.OPENAI_API_KEY == '' }}
+        run: |
+          echo "OPENAI_API_KEY repository secret is not configured; benchmark not executed."
+          exit 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Codex CLI
+        run: npm install -g @openai/codex
+      - name: Run A/B
+        run: |
+          ARGS=(--limit "${{ inputs.limit }}")
+          if [ -n "${{ inputs.model }}" ]; then ARGS+=(--model "${{ inputs.model }}"); fi
+          python evals/run_ab_codex.py "${ARGS[@]}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: arab-writer-ab-results
+          path: evals/results/
+          if-no-files-found: ignore

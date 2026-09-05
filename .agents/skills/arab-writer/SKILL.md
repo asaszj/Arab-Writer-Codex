@@ -3,7 +3,7 @@ name: arab-writer
 description: High-fidelity Arabic writing and editing for Codex. Use for Arabic proofreading, rewriting, naturalization, shortening/expansion, voice preservation, professional/executive, academic, financial, policy/legal, marketing, technical, bilingual, Saudi/Gulf, dialect-sensitive, or long-document editing. Trigger when improving Arabic writing is the task. Do not trigger for coding, research-only questions, or isolated word translation unless editing/writing is requested.
 ---
 
-# Arab Writer v1.1
+# Arab Writer v1.2
 
 The user's explicit instructions are the highest-priority writing constraints. Improve Arabic without changing facts, evidence, intent, protected relationships, or the author's chosen voice unless the user explicitly asks for those changes.
 
@@ -44,7 +44,7 @@ Academic, legal, regulatory, financial, medical, technical specifications, polic
 At high fidelity:
 1. Build a fidelity ledger before editing.
 2. Preserve protected values **and their relationships**.
-3. Preserve modality, negation, causality, uncertainty, estimates, and exceptions.
+3. Preserve modality, negation, causality, uncertainty, estimates, conditions, exceptions, and quoted/code/table structures.
 4. Flag ambiguity rather than inventing a resolution.
 5. When before/after text is available as files, run `scripts/qa_pair.py` after editing.
 
@@ -65,11 +65,14 @@ Identify as applicable:
 
 If the user requests a factual change, update only the affected item/relationship and preserve the rest.
 
-## 4. Load only the relevant references
+## 4. Load only relevant references
 
 Always load:
 - `references/arabic-core.md`
 - `references/quality-gates.md`
+
+For `proofread` and any task where Arabic correctness is central, also load:
+- `references/arabic-linguistic-verification.md`
 
 Load by primary mode:
 - `naturalize` → `references/naturalness.md`
@@ -84,7 +87,7 @@ Load by context mode:
 - marketing/social → `references/marketing-social.md`
 - technical/product → `references/technical-product.md`
 - bilingual/translation → `references/bilingual-translation.md`
-- Saudi/Gulf → `references/saudi-gulf.md`
+- Saudi/Gulf → `references/saudi-gulf.md` and `references/saudi-pragmatics.md`
 - dialect → `references/dialect-sensitive.md`
 - Markdown/tables/mixed direction → `references/formatting-rtl.md`
 
@@ -93,12 +96,22 @@ At high fidelity also load:
 
 Use `references/examples.md` only when an example resolves an editing decision.
 
-**Important:** `proofread` does not automatically load `naturalness.md`. Minimal editing outranks stylistic improvement when the user asks for proofreading only.
+**Important:** `proofread` does not load `naturalness.md`. Minimal editing outranks stylistic improvement when the user asks for proofreading only.
 
-## 5. Edit at the lightest effective level
+## 5. Two-pass linguistic verification
+
+For proofreading and high-fidelity Arabic editing, use two internal passes:
+
+**Pass A — correction:** make the smallest justified corrections.
+
+**Pass B — independent audit:** re-read the source and candidate without assuming Pass A was correct. Check orthography, morphology, syntax, agreement, number constructions, pronouns, punctuation, and whether any correct source form was unnecessarily changed.
+
+Do not expose the audit unless the user asks. Do not invent a correction when uncertain; retain the source or flag the ambiguity.
+
+## 6. Edit at the lightest effective level
 
 1. Correct definite errors.
-2. Remove ambiguity that can be resolved from the source.
+2. Remove ambiguity only when resolvable from the source.
 3. Improve sentence architecture only as needed.
 4. Remove redundancy if the requested mode allows it.
 5. Repair transitions and paragraph flow if the requested mode allows it.
@@ -107,35 +120,26 @@ Use `references/examples.md` only when an example resolves an editing decision.
 
 Do not rewrite already-good sentences to make the edit look substantial.
 
-## 6. Preserve voice
+## 7. Preserve voice and locale
 
-Unless a new voice is requested, preserve:
-- directness;
-- typical sentence rhythm;
-- domain vocabulary;
-- person and point of view;
-- dialect/MSA preference;
-- intentional informality;
-- rhetorical intensity when appropriate.
+Unless a new voice is requested, preserve directness, sentence rhythm, domain vocabulary, person, dialect/MSA preference, intentional informality, and rhetorical intensity.
 
-For `voice-lock` with multiple authentic samples, prefer a profile built from those samples over a generic persona. Do not preserve typos or factual errors as voice.
+For `voice-lock` with multiple authentic samples, build a profile and compare the candidate for drift. Use `scripts/voice_profile.py` when files are available.
 
-## 7. Naturalness
+For Saudi/dialect-sensitive work, preserve the **pragmatic function** as well as words: hierarchy, request strength, courtesy, regional scope, and whether the source is institutional MSA, professional conversational Arabic, or dialectal. Do not manufacture local slang to sound Saudi.
 
-When `naturalize` is active, prefer concrete verbs, explicit logic, purposeful sentence-length variation, specific claims, and paragraph boundaries based on idea shifts.
-
-Review rather than mechanically ban formulaic phrases. Keep a phrase if it is genuinely the best wording in context.
+When before/after files are available, `scripts/locale_guard.py` can flag obvious dialect flattening or accidental dialect insertion. Treat findings as review signals.
 
 ## 8. Long-document mode
 
 For long or multi-section documents:
 1. inventory headings, tables, references, defined terms, and protected facts;
 2. establish a terminology/voice sheet;
-3. edit section by section;
-4. maintain a cross-section ledger for names, terms, dates, figures, and claims;
+3. edit section by section while carrying the ledger forward;
+4. run cross-section checks for conflicting anchored facts, terms, acronyms, and claims;
 5. run a final global consistency pass.
 
-Do not treat a long document as unrelated chunks.
+Use `scripts/document_consistency.py` when files/configuration are available. Do not treat a long document as unrelated chunks.
 
 ## 9. Output discipline
 
@@ -172,6 +176,10 @@ python scripts/qa_pair.py before.txt after.txt
 ```
 
 Treat script findings as review signals, not automatic proof of an error.
+
+## Evidence policy
+
+The skill must not claim that it improves Arabic quality merely because CI passes. Product-quality claims require baseline-vs-skill A/B runs plus human-reviewed or externally benchmarked evidence. The repository includes adapters and licensed fixtures for this purpose.
 
 ## Non-goals
 

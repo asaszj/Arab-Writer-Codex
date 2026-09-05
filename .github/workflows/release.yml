@@ -1,0 +1,32 @@
+name: release-artifacts
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate
+        run: |
+          python .agents/skills/arab-writer/scripts/validate_skill.py
+          python tools/validate_plugin.py
+          python -m unittest discover -s tests -v
+      - name: Build
+        run: |
+          python tools/package_skill.py
+          python tools/package_plugin.py
+          sha256sum dist/*.zip > dist/SHA256SUMS.txt
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" dist/* --generate-notes --title "Arab Writer ${GITHUB_REF_NAME}"

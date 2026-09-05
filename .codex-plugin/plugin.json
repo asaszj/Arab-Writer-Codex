@@ -1,0 +1,12 @@
+{
+  "name": "arab-writer-codex",
+  "version": "1.2.0",
+  "description": "High-fidelity Arabic writing, proofreading, voice, Saudi locale and document editing for Codex.",
+  "author": {"name": "asaszj", "url": "https://github.com/asaszj"},
+  "homepage": "https://github.com/asaszj/Arab-Writer-Codex",
+  "repository": "https://github.com/asaszj/Arab-Writer-Codex",
+  "license": "MIT",
+  "keywords": ["arabic","writing","proofreading","editing","codex","saudi","academic","fidelity"],
+  "skills": "./.agents/skills/",
+  "interface": {"displayName": "Arab Writer", "shortDescription": "High-fidelity Arabic writing and editing for Codex"}
+}

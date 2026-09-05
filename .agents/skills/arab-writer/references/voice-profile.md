@@ -1,4 +1,4 @@
-# Voice Profile
+# Voice Profile v1.2
 
 Use when the user asks to preserve a recognizable personal or organizational voice.
 
@@ -7,17 +7,23 @@ Use the current source only. Preserve directness, formality, sentence rhythm, vo
 
 ## Profile Voice Lock
 When 3+ authentic samples are available, infer a compact profile from repeated evidence rather than stereotypes:
-- median and spread of sentence length;
+- median/mean and spread of sentence length;
+- short/long sentence share;
 - paragraph length;
-- common connectors and openings;
-- first/third person preference;
-- degree of nominal vs verbal constructions;
-- punctuation habits;
-- formality/directness/warmth;
-- recurring domain terms;
-- phrases the author repeatedly avoids or prefers.
+- lexical diversity;
+- common connectors/openings;
+- first-person/collective-person preference;
+- punctuation density;
+- formal vs conversational markers;
+- dialect/MSA choice;
+- recurring domain terms.
 
 Do not imitate accidental errors. Do not overfit one unusual sample.
 
-## Drift check
-After editing, ask whether the text became generically polished at the expense of the author's characteristic rhythm or lexical choices. If so, restore voice while retaining correctness.
+## Measured drift
+When files are available, use `scripts/voice_profile.py --reference ... --candidate ...` to produce a heuristic drift report. The score is a regression signal, not proof of authorship.
+
+Interpret drift dimension-by-dimension. A candidate can preserve sentence length while losing lexical/directness patterns, or preserve vocabulary while becoming generically formal.
+
+## Decision rule
+If correctness and voice conflict, correct definite errors but preserve non-error stylistic traits. If the requested task explicitly changes tone, compare only the dimensions that should remain stable.

@@ -4,7 +4,7 @@ ROOT=Path(__file__).resolve().parents[1]
 class EvalSchemaTests(unittest.TestCase):
     def test_cases_have_required_fields(self):
         cases=[json.loads(x) for x in (ROOT/'tests/evals.jsonl').read_text(encoding='utf-8').splitlines() if x.strip()]
-        self.assertGreaterEqual(len(cases),20)
+        self.assertGreaterEqual(len(cases),25)
         ids=set()
         for c in cases:
             for k in ('id','task','input','expected_mode','must_preserve','must_not'): self.assertIn(k,c)

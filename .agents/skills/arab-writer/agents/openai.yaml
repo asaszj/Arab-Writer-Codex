@@ -1,0 +1,8 @@
+interface:
+  display_name: "Arab Writer"
+  short_description: "High-fidelity Arabic writing and editing for Codex"
+  brand_color: "#176B5B"
+  default_prompt: "راجع النص العربي وحسّنه وفق السياق مع الحفاظ على الحقائق والنبرة المطلوبة."
+
+policy:
+  allow_implicit_invocation: true

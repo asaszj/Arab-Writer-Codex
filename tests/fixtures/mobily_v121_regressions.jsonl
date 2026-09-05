@@ -1,0 +1,6 @@
+{"id":"mobily-001","kind":"lint_clean","text":"بلغ التعويض ١,٢٢٥ مليون ريال، والإيرادات ٢٥,١٩١ مليون ريال.","forbid":"latin_comma_between_arabic"}
+{"id":"mobily-002","kind":"lint_flag","text":"هذا نص عربي, وهذا تكملة.","require":"latin_comma_between_arabic"}
+{"id":"mobily-003","kind":"editorial_candidate","text":"نشرت الشركة نتائج مرتفعة ضمن سلسلة من التوسع التشغيلي والاستثماري.","require":"awkward_expansion_phrase"}
+{"id":"mobily-004","kind":"editorial_candidate","text":"صدر قرار تعليق للتداول في أكثر من مرحلة.","require":"awkward_trading_phrase"}
+{"id":"mobily-005","kind":"editorial_candidate","text":"تبع ذلك فحص من هيئة السوق المالية للوثائق.","require":"awkward_agentive_phrase"}
+{"id":"mobily-006","kind":"semantic_pair","a":"تُستخدم هذه البيانات بوصفها أرقامًا منشورة في ذلك الوقت قبل ظهور التعديلات اللاحقة.","b":"وكانت هذه الأرقام منشورة في ذلك الوقت ولم تكن بعدُ الأرقام النهائية التي ظهرت عقب التعديلات.","min_score":0.34}

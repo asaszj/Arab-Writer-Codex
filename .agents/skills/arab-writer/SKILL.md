@@ -1,208 +1,184 @@
 ---
 name: arab-writer
-description: Arabic writing and editing for Codex: proofread, rewrite, naturalize, shorten or expand, adapt tone, preserve author voice, and edit professional, executive, academic, financial, policy, marketing, technical, bilingual, Saudi/Gulf, or general Arabic. Use when Arabic output quality is the task. Do not trigger for coding, research-only, or single-word translation unless writing/editing is requested.
+description: High-fidelity Arabic writing and editing for Codex. Use for Arabic proofreading, rewriting, naturalization, shortening/expansion, voice preservation, professional/executive, academic, financial, policy/legal, marketing, technical, bilingual, Saudi/Gulf, dialect-sensitive, or long-document editing. Trigger when improving Arabic writing is the task. Do not trigger for coding, research-only questions, or isolated word translation unless editing/writing is requested.
 ---
 
-# Arab Writer
+# Arab Writer v1.1
 
-Treat the user's explicit instructions as the highest-priority writing constraints. Use this skill to improve Arabic writing quality without changing facts, evidence, intent, or the author's chosen voice unless the user asks for those changes.
+The user's explicit instructions are the highest-priority writing constraints. Improve Arabic without changing facts, evidence, intent, protected relationships, or the author's chosen voice unless the user explicitly asks for those changes.
 
 ## Mission
 
-Produce Arabic that is:
-- correct;
-- natural;
-- precise;
-- context-aware;
-- audience-appropriate;
-- faithful to source facts and claim strength;
-- consistent in terminology, punctuation, and formatting.
+Produce Arabic that is correct, natural, precise, context-aware, audience-appropriate, and faithful to the source.
 
-Do not optimize for AI-detector evasion. Do not claim that any phrase proves or disproves AI authorship. Treat "AI-like" patterns only as style heuristics.
+Do not optimize for AI-detector evasion. Do not claim that wording proves or disproves AI authorship. Treat formulaic patterns only as writing-quality heuristics.
 
-## Default behavior
+## 1. Route the task
 
-If the user does not specify a register, default to clear Modern Standard Arabic with moderate formality, direct wording, and minimal rhetorical padding.
-
-Do not ask for a style brief when the request can be completed from context. Infer audience, medium, and tone from the text and request. Ask only when a missing choice would materially change the result and cannot be inferred.
-
-## Step 1 — Classify the task
-
-Choose one primary mode and any supporting modes.
-
-Primary modes:
-- `proofread`: correct errors only; preserve wording and structure as much as possible.
+Choose one primary mode:
+- `proofread`: correct definite language/mechanical errors with minimal rewriting.
 - `rewrite`: improve clarity, flow, and wording while preserving meaning.
-- `naturalize`: reduce stiffness, repetition, generic phrasing, and mechanical structure.
-- `voice-lock`: preserve the author's recognizable voice while repairing quality issues.
-- `shorten`: reduce length by information priority, not by compressing every sentence.
-- `expand`: add useful development only from user-provided facts or clearly labeled general explanation.
-- `translate-polish`: translate and then make the target Arabic natural and domain-appropriate.
+- `naturalize`: reduce stiffness, repetition, generic framing, and mechanical structure.
+- `voice-lock`: preserve the author's recognizable voice while repairing defects.
+- `shorten`: reduce length by information priority.
+- `expand`: develop only from supplied facts or clearly labeled general explanation.
+- `translate-polish`: translate and make the target Arabic natural and domain-appropriate.
+- `document`: edit a long or multi-section document with cross-section consistency.
 
-Context modes:
-- `professional`
-- `executive`
-- `academic`
-- `financial`
-- `policy-legal`
-- `marketing-social`
-- `technical-product`
-- `saudi-gulf`
-- `dialect-sensitive`
-- `bilingual`
+Add context modes only when relevant:
+`professional`, `executive`, `academic`, `financial`, `policy-legal`, `marketing-social`, `technical-product`, `saudi-gulf`, `dialect-sensitive`, `bilingual`.
 
-Load only the references relevant to the selected modes.
+Do not load guidance merely because it exists.
 
-## Step 2 — Set risk level
+## 2. Set fidelity level
 
-### Standard risk
-Use for ordinary messages, posts, general writing, and low-stakes content.
+### Standard
+Casual messages, ordinary posts, general writing.
 
-### Elevated risk
-Use for professional, public, customer-facing, marketing, or institutional content.
+### Elevated
+Professional, public, customer-facing, marketing, institutional communication.
 
 ### High fidelity
-Use for academic, legal, regulatory, financial, medical, technical specifications, policies, contracts, or any text containing critical numbers, dates, citations, standards, IDs, or compliance claims.
+Academic, legal, regulatory, financial, medical, technical specifications, policies, contracts, or any text containing critical numbers, dates, citations, standards, IDs, conditions, or compliance claims.
 
 At high fidelity:
-1. Build a protected-content ledger before editing.
-2. Preserve all protected items exactly unless the user explicitly asks to change them.
-3. Do not strengthen causal, legal, financial, medical, regulatory, or scientific claims.
-4. Flag ambiguity instead of inventing a resolution.
-5. For long files or dense numeric content, use `scripts/protected_tokens.py` before and after the edit when tools are available.
+1. Build a fidelity ledger before editing.
+2. Preserve protected values **and their relationships**.
+3. Preserve modality, negation, causality, uncertainty, estimates, and exceptions.
+4. Flag ambiguity rather than inventing a resolution.
+5. When before/after text is available as files, run `scripts/qa_pair.py` after editing.
 
-## Step 3 — Build the protected-content ledger
+## 3. Build the fidelity ledger
 
-Before editing, identify and preserve as applicable:
-- names and titles;
-- dates and deadlines;
-- amounts, percentages, quantities, units, and currencies;
-- identifiers, license numbers, invoice numbers, manuscript IDs, ticket IDs;
-- standards, regulations, article numbers, clauses, versions, model names;
+Identify as applicable:
+- named entities and titles;
+- dates, deadlines, periods;
+- amounts, percentages, quantities, units, currencies;
+- identifiers, license/invoice/manuscript/ticket numbers;
+- standards, regulations, clauses, versions, model names;
 - citations, references, DOI values, URLs, email addresses;
-- quotations;
-- formulas, equations, code, variables, and table values;
-- contractual conditions and exceptions;
-- claim strength: possibility, association, correlation, causation, obligation, estimate, forecast, or fact.
+- quotations, code, formulas, variables;
+- table row/column meaning and values;
+- conditions and exceptions;
+- claim strength and modality: possibility, association, causation, obligation, prohibition, estimate, forecast, guarantee, fact;
+- **anchored facts**, e.g. `الإيرادات → 100 مليون` and `التكاليف → 50 مليون`, not merely the set `{100, 50}`.
 
-If the user explicitly requests a factual change, update only the affected protected item and keep the rest intact.
+If the user requests a factual change, update only the affected item/relationship and preserve the rest.
 
-## Step 4 — Load the relevant references
+## 4. Load only the relevant references
 
-Always consult:
+Always load:
 - `references/arabic-core.md`
-- `references/naturalness.md`
 - `references/quality-gates.md`
 
-Then load by task:
-- tone or voice: `references/tone-and-voice.md`
-- professional or executive: `references/professional-executive.md`
-- academic: `references/academic-research.md`
-- financial/business: `references/financial-business.md`
-- policy/legal/regulatory: `references/policy-legal.md`
-- marketing/social: `references/marketing-social.md`
-- technical/product: `references/technical-product.md`
-- bilingual/translation: `references/bilingual-translation.md`
-- Saudi/Gulf context: `references/saudi-gulf.md`
-- dialect: `references/dialect-sensitive.md`
-- Markdown, tables, mixed-direction text: `references/formatting-rtl.md`
+Load by primary mode:
+- `naturalize` → `references/naturalness.md`
+- `voice-lock` → `references/tone-and-voice.md` and, when multiple samples exist, `references/voice-profile.md`
+- `document` → `references/document-mode.md`
 
-Use `references/examples.md` only when an example pattern helps resolve an editing decision.
+Load by context mode:
+- professional/executive → `references/professional-executive.md`
+- academic → `references/academic-research.md`
+- financial/business → `references/financial-business.md`
+- policy/legal/regulatory → `references/policy-legal.md`
+- marketing/social → `references/marketing-social.md`
+- technical/product → `references/technical-product.md`
+- bilingual/translation → `references/bilingual-translation.md`
+- Saudi/Gulf → `references/saudi-gulf.md`
+- dialect → `references/dialect-sensitive.md`
+- Markdown/tables/mixed direction → `references/formatting-rtl.md`
 
-## Step 5 — Edit at the lightest effective level
+At high fidelity also load:
+- `references/fidelity-guard.md`
 
-Follow this order:
-1. Correct definite language errors.
-2. Remove ambiguity.
-3. Improve sentence architecture.
-4. Remove redundant wording.
-5. Repair transitions and paragraph flow.
-6. Adjust tone and register.
-7. Restructure only when the original structure is materially weaker or the user asks for restructuring.
+Use `references/examples.md` only when an example resolves an editing decision.
 
-Do not rewrite already-good sentences merely to make the edit look larger.
+**Important:** `proofread` does not automatically load `naturalness.md`. Minimal editing outranks stylistic improvement when the user asks for proofreading only.
 
-## Step 6 — Preserve voice
+## 5. Edit at the lightest effective level
 
-Unless the user requests a new voice:
-- preserve the author's directness;
-- preserve typical sentence length within reason;
-- preserve domain vocabulary;
-- preserve first/third person choices;
-- preserve dialect or MSA preference;
-- preserve intentional informality;
-- preserve rhetorical intensity when appropriate.
+1. Correct definite errors.
+2. Remove ambiguity that can be resolved from the source.
+3. Improve sentence architecture only as needed.
+4. Remove redundancy if the requested mode allows it.
+5. Repair transitions and paragraph flow if the requested mode allows it.
+6. Adjust tone/register only when requested or clearly required by the medium.
+7. Restructure only when materially beneficial or explicitly requested.
 
-Do not "professionalize" a personal message into bureaucratic Arabic.
+Do not rewrite already-good sentences to make the edit look substantial.
 
-## Step 7 — Naturalness rules
+## 6. Preserve voice
 
-Prefer:
-- concrete verbs over stacked abstract nouns;
-- direct logical links over decorative transitions;
-- varied but purposeful sentence length;
-- specific claims over generic framing;
-- one conclusion instead of repeated restatement;
-- natural paragraph boundaries based on idea shifts.
+Unless a new voice is requested, preserve:
+- directness;
+- typical sentence rhythm;
+- domain vocabulary;
+- person and point of view;
+- dialect/MSA preference;
+- intentional informality;
+- rhetorical intensity when appropriate.
 
-Review, rather than mechanically ban:
-- "في ظل"
-- "في إطار"
-- "من الجدير بالذكر"
-- "من المهم الإشارة"
-- "علاوة على ذلك"
-- "يلعب دورًا محوريًا"
-- "يشكل ركيزة أساسية"
-- generic introductions and conclusions;
-- forced three-part lists;
-- repeated label-colon bullets;
-- excessive bolding and headings.
+For `voice-lock` with multiple authentic samples, prefer a profile built from those samples over a generic persona. Do not preserve typos or factual errors as voice.
 
-Keep any of these when they are genuinely the best wording.
+## 7. Naturalness
 
-## Step 8 — Output discipline
+When `naturalize` is active, prefer concrete verbs, explicit logic, purposeful sentence-length variation, specific claims, and paragraph boundaries based on idea shifts.
 
-Return the artifact the user asked for.
+Review rather than mechanically ban formulaic phrases. Keep a phrase if it is genuinely the best wording in context.
 
-If the user asks for:
-- a finished rewrite: return the finished rewrite;
-- proofreading only: do not substantially rewrite;
-- tracked changes or comparison: show the changes clearly;
-- multiple options: make them meaningfully different;
-- a short version: prioritize information and remove low-value detail;
-- a professional version: make purpose, requested action, owner, deadline, or decision explicit when present in the source;
-- an academic edit: preserve evidence, citations, terminology, and epistemic strength.
+## 8. Long-document mode
 
-Do not append a generic explanation unless the user asks for rationale, change notes, or comparison.
+For long or multi-section documents:
+1. inventory headings, tables, references, defined terms, and protected facts;
+2. establish a terminology/voice sheet;
+3. edit section by section;
+4. maintain a cross-section ledger for names, terms, dates, figures, and claims;
+5. run a final global consistency pass.
 
-## Step 9 — Quality gate
+Do not treat a long document as unrelated chunks.
 
-Before returning, run the checklist in `references/quality-gates.md`.
+## 9. Output discipline
 
-For high-fidelity edits, verify:
-- every number;
-- every date;
-- every named entity;
-- every citation/reference marker;
-- every standard/ID;
-- every exception and condition;
-- every causal or obligation verb.
+Return the artifact requested.
+- finished rewrite → return the finished text;
+- proofreading only → do not substantially rewrite;
+- tracked changes/comparison → make changes explicit;
+- multiple options → make them meaningfully different;
+- academic edit → preserve evidence, citations, terminology, and epistemic strength;
+- high-fidelity edit → preserve every protected relation, not only tokens.
 
-If the before/after text is available as files and tools are available, run:
+Do not append generic change notes unless asked.
+
+## 10. Quality gate
+
+Run `references/quality-gates.md` before returning.
+
+For high-fidelity work, verify:
+- values and their anchors;
+- named entities;
+- citations/standards/IDs;
+- quotations and code;
+- table relationships;
+- negation;
+- modal/obligation verbs;
+- causal/association verbs;
+- forecast/estimate/guarantee language;
+- conditions and exceptions.
+
+When files are available:
 
 ```bash
 python scripts/qa_pair.py before.txt after.txt
 ```
 
-Fix any true-positive issues before final output.
+Treat script findings as review signals, not automatic proof of an error.
 
 ## Non-goals
 
-Do not use this skill to:
+Do not:
 - fabricate evidence, citations, facts, sources, or quotes;
 - bypass plagiarism or authorship-detection systems;
 - disguise copied text as original work;
 - convert uncertain evidence into certainty;
-- add legal, financial, medical, or regulatory advice not present in the source merely to make writing sound stronger;
-- translate a single isolated word when no writing/editing task exists;
-- answer research-only or coding-only questions just because the final answer may contain Arabic.
+- add legal, financial, medical, regulatory, or scientific advice not present in the source merely to sound stronger;
+- invoke this skill for coding/research-only tasks just because the answer is Arabic.

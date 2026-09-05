@@ -1,5 +1,6 @@
 __pycache__/
-*.py[cod]
-.DS_Store
+*.pyc
+*.pyo
 *.zip
-.coverage
+.DS_Store
+evals/results/

@@ -1,10 +1,10 @@
 # Arab Writer for Codex
 
-**Arab Writer** is a Codex-native Arabic writing and editing skill designed for high-quality real-world work: proofreading, rewriting, naturalization, voice preservation, executive communication, academic editing, financial and policy text, marketing, technical documentation, bilingual work, and Saudi/Gulf institutional Arabic.
+**Arab Writer** is a Codex-native Arabic writing and editing skill focused on high-fidelity revision: better Arabic without silently changing facts, value relationships, modality, citations, tables, code, or author voice.
 
 It is intentionally **Codex-first**. This repository does not package a Claude skill or cross-agent compatibility layer.
 
-## Why this version is different
+## Why v1.1 is different
 
 The skill does more than rewrite sentences. It uses a fidelity-first workflow:
 
@@ -16,6 +16,17 @@ The skill does more than rewrite sentences. It uses a fidelity-first workflow:
 6. **Use deterministic QA helpers for high-fidelity work when needed.**
 
 This reduces a common failure mode in AI editing: producing smoother prose while silently changing factual or evidentiary meaning.
+
+### v1.1 fidelity stack
+
+Arab Writer now checks four distinct layers:
+
+1. **Protected tokens** — dates, amounts, IDs, standards, citations, URLs.
+2. **Anchored facts** — values remain attached to the correct labels/entities.
+3. **Semantic sentinels** — negation, permission/obligation, causality, uncertainty, forecast/guarantee language.
+4. **Protected structures** — quotations, inline/fenced code, and Markdown table relationships.
+
+It also includes an actual **Codex baseline-vs-skill A/B harness** under `evals/`. CI validates software; A/B evaluation measures writing impact.
 
 ## Capabilities
 
@@ -38,34 +49,32 @@ This reduces a common failure mode in AI editing: producing smoother prose while
 ## Codex-native structure
 
 ```text
-.agents/
-└── skills/
-    └── arab-writer/
-        ├── SKILL.md
-        ├── agents/
-        │   └── openai.yaml
-        ├── assets/
-        │   └── style-brief.md
-        ├── references/
-        │   ├── arabic-core.md
-        │   ├── naturalness.md
-        │   ├── tone-and-voice.md
-        │   ├── professional-executive.md
-        │   ├── academic-research.md
-        │   ├── financial-business.md
-        │   ├── policy-legal.md
-        │   ├── marketing-social.md
-        │   ├── technical-product.md
-        │   ├── bilingual-translation.md
-        │   ├── saudi-gulf.md
-        │   ├── dialect-sensitive.md
-        │   ├── formatting-rtl.md
-        │   ├── quality-gates.md
-        │   └── examples.md
-        └── scripts/
-            ├── arabic_lint.py
-            ├── protected_tokens.py
-            └── validate_skill.py
+.agents/skills/arab-writer/
+├── SKILL.md
+├── agents/openai.yaml
+├── references/
+│   ├── arabic-core.md
+│   ├── naturalness.md
+│   ├── fidelity-guard.md
+│   ├── voice-profile.md
+│   ├── document-mode.md
+│   └── domain references...
+└── scripts/
+    ├── protected_tokens.py
+    ├── anchored_facts.py
+    ├── semantic_sentinels.py
+    ├── structure_guard.py
+    ├── arabic_mechanical_lint.py
+    ├── voice_profile.py
+    └── qa_pair.py
+
+evals/
+├── run_ab_codex.py
+└── RUBRICS.md
+
+tests/
+├── evals.jsonl
+└── deterministic regression tests
 ```
 
 ## Install in Codex
@@ -164,3 +173,11 @@ See [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/EVALUATION.md`](docs/EVALUATIO
 ## License
 
 MIT.
+
+## Evaluate v1.1 against Codex baseline
+
+```bash
+python evals/run_ab_codex.py --limit 20
+```
+
+See `docs/EVALUATION.md` and `evals/RUBRICS.md`.

@@ -1,61 +1,26 @@
-# Design
+# Design — Arab Writer v1.1
 
-## 1. Codex-native progressive disclosure
-
-Codex initially sees a skill's `name`, `description`, and path, then loads `SKILL.md` only when the task matches. The skill therefore keeps the description explicit and scoped, while detailed domain guidance lives in `references/`.
+## 1. Progressive disclosure
+Codex initially routes on skill metadata; detailed guidance is loaded only for the active writing mode. Proofreading does not automatically load naturalization guidance.
 
 ## 2. Fidelity before fluency
-
-A fluent rewrite can still be wrong. Arab Writer treats factual preservation as a first-class editing constraint.
-
-The protected-content ledger covers:
-- entities;
-- numbers;
-- dates;
-- citations;
-- IDs;
-- standards;
-- conditions;
-- claim strength.
+Protection has four layers:
+1. critical tokens;
+2. anchor→value relationships;
+3. semantic sentinels (negation, modality, causality, uncertainty, forecast/guarantee);
+4. protected structures (quotes, code, tables).
 
 ## 3. Risk-adaptive editing
-
-The same editing freedom should not be used for:
-- a casual caption;
-- an academic result;
-- a contract clause.
-
-The skill increases preservation requirements with risk.
+Editing freedom decreases as factual/semantic risk increases.
 
 ## 4. Voice preservation
+Quick Voice Lock uses the current source. Profile Voice Lock uses repeated traits from multiple authentic samples.
 
-Many editors collapse different authors into the same polished register. Voice Lock intentionally preserves:
-- directness;
-- sentence rhythm;
-- vocabulary;
-- person;
-- formality;
-- dialect preference.
+## 5. Long-document coherence
+Multi-section documents carry a persistent terminology/fidelity/voice ledger and receive a global consistency pass.
 
-## 5. Naturalness without detector theater
+## 6. Deterministic QA is a reviewer, not an oracle
+Scripts flag suspicious changes. Semantic intent remains model/human reviewed.
 
-The system removes formulaic writing because it weakens prose, not because a phrase is proof of machine authorship.
-
-It does not:
-- promise detector evasion;
-- add intentional errors;
-- randomize text to look "human";
-- disguise copied text.
-
-## 6. Deterministic QA where useful
-
-Scripts are limited to tasks where deterministic checks add value:
-- structural validation;
-- protected-token comparison;
-- mechanical Arabic linting.
-
-Semantic writing remains instruction-led.
-
-## 7. General, modular coverage
-
-One skill handles the writing workflow; references provide specialized constraints. This avoids installing many overlapping skills while keeping context loading selective.
+## 7. Evidence-based evolution
+New prompt rules should be introduced in response to observed failures and evaluated for regressions. The repository separates CI tests from writing-quality A/B evaluation.

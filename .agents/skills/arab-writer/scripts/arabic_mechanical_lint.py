@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 """Heuristic Arabic mechanical prose linter.
 
-Reports likely mechanical issues. It intentionally avoids auto-correction.
+Reports likely mechanical issues. It intentionally avoids auto-correction and
+must not treat numeric thousands separators as prose punctuation.
 """
 from __future__ import annotations
 import argparse, json, re
 from pathlib import Path
 
 AR = r"\u0600-\u06FF"
+AR_LETTER = r"\u0621-\u063A\u0641-\u064A\u066E-\u06D3\u06FA-\u06FC"
 
 CHECKS = [
     ("multiple_spaces", re.compile(r"(?m)(?<!^)[ \t]{2,}"), "Multiple spaces"),
     ("space_before_punctuation", re.compile(r"\s+[،؛؟,.!?]"), "Space before punctuation"),
-    ("latin_comma_between_arabic", re.compile(rf"[{AR}]\s*,\s*[{AR}]"), "Latin comma inside Arabic prose"),
-    ("latin_question_after_arabic", re.compile(rf"[{AR}][^?\n]*\?"), "Latin question mark in Arabic prose"),
+    ("latin_comma_between_arabic", re.compile(rf"[{AR_LETTER}]\s*,\s*[{AR_LETTER}]"), "Latin comma inside Arabic prose"),
+    ("latin_question_after_arabic", re.compile(rf"[{AR_LETTER}][^?\n]*\?"), "Latin question mark in Arabic prose"),
     ("duplicate_punctuation", re.compile(r"([،؛:,.!?؟])\1+"), "Duplicated punctuation"),
     ("tatweel", re.compile(r"ـ{2,}"), "Repeated tatweel"),
     ("zero_width", re.compile(r"[\u200b\u200c\u200d\ufeff]"), "Zero-width/invisible character"),
-    ("adjacent_duplicate_word", re.compile(rf"\b([{AR}]+)\s+\1\b", re.I), "Repeated adjacent word"),
+    ("adjacent_duplicate_word", re.compile(rf"\b([{AR_LETTER}]+)\s+\1\b", re.I), "Repeated adjacent word"),
 ]
 
 def line_col(text: str, pos: int) -> tuple[int, int]:

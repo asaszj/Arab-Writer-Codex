@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.1 — 2026-09-05
+
+### Editorial depth & QA precision
+- Fixed financial-number lint false positives for thousands separators such as `١,٢٢٥` and `25,191` while preserving detection of Latin commas in Arabic prose.
+- Added an explicit edit-depth controller; `rewrite` and `naturalize` now default to Level 3 editorial review rather than proofread-level conservatism.
+- Added deterministic editorial-opportunity scanning for known awkward phrasing, dense factual sentences and possible meta-sentences.
+- Added near-semantic repetition review signals with no automatic deletion.
+- Added a final Pass C missed-opportunity review for editorial/document modes.
+- Added conservative bibliography-consistency auditing that never fabricates missing metadata.
+- Tightened Voice Lock reporting: use measured `voice_profile.py` output when files exist; low edit volume is not treated as voice evidence.
+- Added evidence labels for QA reports: VERIFIED / MEASURED / INFERRED / NOT TESTED / HUMAN REVIEW.
+- Made DOCX page-count reporting renderer-aware.
+- Added a real-world Mobily regression fixture and v1.2.1 acceptance gate derived from a full financial/regulatory chapter-editing run.
+
+### Evidence policy
+- v1.2.1 fixes targeted real-world regressions. It still does not claim universal writing superiority without baseline-vs-skill A/B and human review.
+
 ## 1.2.0 — 2026-09-05
 
 ### Critical closures

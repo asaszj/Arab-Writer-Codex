@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.2.0 — 2026-09-05
+
+### Critical closures
+- Added two-pass Arabic linguistic verification guidance for proofreading/high-fidelity work.
+- Added a licensed human-authored Nahw-Passage regression subset plus external benchmark adapters.
+- Added condition/exception preservation and locale/register drift guards.
+- Added long-document consistency checks for recurring anchored facts, acronym definitions, and configured terminology.
+- Upgraded voice profiling with measurable before/after drift dimensions.
+- Added Saudi pragmatic/register guidance focused on hierarchy, speech act, ambiguity and dialect flattening.
+- Added Codex plugin manifest, plugin validator, versioned skill/plugin packaging, and tag release workflow.
+- Strengthened CI to validate plugin packaging and external evaluation fixtures.
+
+### Evidence policy
+- Deterministic CI, external fixtures, A/B runs, and human review are separate evidence layers.
+- No release may claim writing superiority without actual baseline-vs-skill evidence.
+
 ## 1.1.0 — 2026-09-05
 
 ### Changed

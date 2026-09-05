@@ -1,4 +1,4 @@
-# Arab Writer v1.1 Evaluation Rubrics
+# Arab Writer v1.2 Evaluation Rubrics
 
 Use a **core rubric + task-specific rubric**. Do not collapse everything into one fluency score.
 

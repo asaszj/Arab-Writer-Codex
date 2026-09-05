@@ -1,18 +1,34 @@
-# External Arabic Evaluation Sources
+# External Arabic Evaluation — v1.2
 
-Arab Writer should not train its quality claims only on self-authored tests. v1.1 defines an external-benchmark intake plan.
+Arab Writer does not rely only on self-authored tests. v1.2 includes a small licensed human-authored Nahw-Passage fixture and adapters for larger external suites.
 
-Candidate sources (subject to each dataset's license/terms):
-- Nahw — Arabic grammar understanding/correction/explanation benchmark (EACL 2026).
-- AraLingBench — Arabic linguistic competence across morphology/syntax and related dimensions (AbjadNLP 2026).
-- TAQEEM — multi-trait Arabic writing evaluation shared task/dataset (ArabicNLP 2025).
-- LAILA — Arabic essay quality assessment corpus (EACL 2026).
-- Saudi dialect/cultural competence benchmarks where licensing permits.
+## Nahw (QCRI, EACL 2026)
+- Natural data: Nahw-MCQ (~5K) and Nahw-Passage (100 passages with annotated grammatical/morphological errors, corrections and explanations).
+- Upstream repository: `https://github.com/qcri/nahw-arabic-grammar-benchmark`
+- Repository license: Apache-2.0.
+- Included here: a small attributed Nahw-Passage regression subset in `evals/external/nahw_passage_sample.jsonl`.
+- Adapter: `evals/adapters/nahw_passage.py`.
 
-Do not vendor third-party benchmark data into this repository without verifying redistribution rights. Instead, provide adapters or documented import steps.
+## AraLingBench (AbjadNLP 2026)
+- 150 expert-authored items across grammar, morphology, spelling, reading comprehension and syntax.
+- Upstream repository: `https://github.com/hammoudhasan/AraLingBench`
+- Repository license reported upstream: MIT.
+- Adapter: `evals/adapters/aralingbench.py` for exported JSON/JSONL.
 
-The product claim for Arab Writer should be based on:
-1. internal targeted regression cases;
-2. real-world native Arabic edits with expert gold/review;
-3. licensed external benchmark subsets;
-4. baseline vs skill A/B runs on the same model/snapshot/reasoning configuration.
+## Absher (Saudi dialect/cultural benchmark)
+- 18K+ MCQs across Saudi regions and pragmatic/cultural task types.
+- Upstream repository: `https://github.com/renad-01/Absher-Benchmark`
+- v1.2 does **not** vendor this dataset because redistribution terms must be checked independently.
+- Adapter: `evals/adapters/absher.py` for a locally obtained CSV.
+
+## TAQEEM / LAILA
+Use for trait-based Arabic writing-quality evaluation (organization, vocabulary, style, development, mechanics, grammar). v1.2 documents these as human-quality references but does not copy data without explicit license verification.
+
+## Release evidence stack
+1. deterministic regression tests;
+2. human-authored grammar fixtures;
+3. baseline-vs-skill Codex A/B on identical model/configuration;
+4. blind human review on a sample;
+5. external benchmark adapters where licenses permit.
+
+A release must not call itself “better” solely because CI passes.

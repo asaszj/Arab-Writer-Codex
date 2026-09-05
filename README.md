@@ -4,7 +4,7 @@
 
 It is intentionally **Codex-first**. This repository does not package a Claude skill or cross-agent compatibility layer.
 
-## Why v1.1 is different
+## Why v1.2 is different
 
 The skill does more than rewrite sentences. It uses a fidelity-first workflow:
 
@@ -17,7 +17,7 @@ The skill does more than rewrite sentences. It uses a fidelity-first workflow:
 
 This reduces a common failure mode in AI editing: producing smoother prose while silently changing factual or evidentiary meaning.
 
-### v1.1 fidelity stack
+### v1.2 fidelity stack
 
 Arab Writer now checks four distinct layers:
 
@@ -174,10 +174,22 @@ See [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/EVALUATION.md`](docs/EVALUATIO
 
 MIT.
 
-## Evaluate v1.1 against Codex baseline
+## Evaluate v1.2 against Codex baseline
 
 ```bash
 python evals/run_ab_codex.py --limit 20
 ```
 
 See `docs/EVALUATION.md` and `evals/RUBRICS.md`.
+
+## v1.2 critical closures
+
+- two-pass Arabic linguistic audit rather than surface lint alone;
+- human-authored Nahw-Passage evaluation fixture and external benchmark adapters;
+- condition/exception and locale/register drift guards;
+- measurable voice drift;
+- long-document consistency checks;
+- Saudi pragmatic/register guidance;
+- first-class Codex plugin manifest and release packaging.
+
+See `docs/BENCHMARKS.md`, `docs/PLUGIN.md`, and `docs/RELEASE.md`.

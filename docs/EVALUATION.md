@@ -1,6 +1,6 @@
-# Evaluation — v1.1
+# Evaluation — v1.2
 
-v1.1 separates **software correctness** from **writing effectiveness**.
+v1.2 separates **software correctness** from **writing effectiveness**.
 
 ## Layer A — deterministic CI
 Run:

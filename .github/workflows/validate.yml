@@ -14,9 +14,28 @@ jobs:
           python-version: "3.12"
       - name: Validate skill structure
         run: python .agents/skills/arab-writer/scripts/validate_skill.py
+      - name: Validate plugin manifest
+        run: python tools/validate_plugin.py
       - name: Compile Python helpers
-        run: python -m compileall -q .agents/skills/arab-writer/scripts evals tests
+        run: python -m compileall -q .agents/skills/arab-writer/scripts evals tests tools
       - name: Run deterministic regression tests
         run: python -m unittest discover -s tests -v
       - name: Smoke composite fidelity QA
         run: python .agents/skills/arab-writer/scripts/qa_pair.py tests/fixtures/before.txt tests/fixtures/after.txt
+      - name: Build distributions
+        run: |
+          python tools/package_skill.py
+          python tools/package_plugin.py
+      - name: Verify packages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          zips=list(Path('dist').glob('*.zip'))
+          assert len(zips)>=2, zips
+          for z in zips:
+              with zipfile.ZipFile(z) as f:
+                  names=f.namelist()
+                  assert any(n.endswith('SKILL.md') for n in names), (z,names[:20])
+          print('OK:', [str(z) for z in zips])
+          PY

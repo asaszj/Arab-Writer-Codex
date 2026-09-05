@@ -1,4 +1,4 @@
-# Design — Arab Writer v1.1
+# Design — Arab Writer v1.2
 
 ## 1. Progressive disclosure
 Codex initially routes on skill metadata; detailed guidance is loaded only for the active writing mode. Proofreading does not automatically load naturalization guidance.

@@ -2,7 +2,7 @@ interface:
   display_name: "Arab Writer"
   short_description: "High-fidelity Arabic writing and editing for Codex"
   brand_color: "#176B5B"
-  default_prompt: "Use $arab-writer to review and improve this Arabic text while preserving its facts, protected relationships, and intended voice."
+  default_prompt: "Use $arab-writer to edit this Arabic text with the lightest effective changes while preserving facts, relationships, voice, register, and requested constraints."
 
 policy:
   allow_implicit_invocation: true

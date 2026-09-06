@@ -11,6 +11,10 @@ on:
         description: "Optional Codex model slug"
         required: false
         default: ""
+      reasoning:
+        description: "Optional model reasoning effort (low/medium/high/xhigh when supported)"
+        required: false
+        default: ""
 
 jobs:
   benchmark:
@@ -32,10 +36,13 @@ jobs:
           node-version: "22"
       - name: Install Codex CLI
         run: npm install -g @openai/codex
+      - name: Validate benchmark matrix
+        run: python evals/benchmark_matrix.py evals/benchmark_matrix.json
       - name: Run A/B
         run: |
           ARGS=(--limit "${{ inputs.limit }}")
           if [ -n "${{ inputs.model }}" ]; then ARGS+=(--model "${{ inputs.model }}"); fi
+          if [ -n "${{ inputs.reasoning }}" ]; then ARGS+=(--reasoning "${{ inputs.reasoning }}"); fi
           python evals/run_ab_codex.py "${ARGS[@]}"
       - uses: actions/upload-artifact@v4
         if: always()

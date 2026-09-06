@@ -1,34 +1,42 @@
-# Evaluation — v1.2
+# Evaluation — v1.3
 
-v1.2 separates **software correctness** from **writing effectiveness**.
+v1.3 separates software correctness from writing effectiveness.
 
 ## Layer A — deterministic CI
-Run:
-```bash
-python .agents/skills/arab-writer/scripts/validate_skill.py
-python -m unittest discover -s tests -v
-```
-This validates structure and deterministic guards. It does **not** prove the skill improves writing.
+- skill/plugin validation;
+- compile;
+- regression tests;
+- benchmark matrix coverage;
+- structural release gate;
+- packaging.
 
-## Layer B — Codex A/B
-Run the same cases on the same Codex model/configuration:
-- baseline: no skill;
-- candidate: Arab Writer installed and explicitly invoked.
+## Layer B — Arabic/fidelity benchmarks
+Use licensed or externally referenced data where allowed, including Arabic GEC/linguistic suites and real-world regression fixtures.
 
-```bash
-python evals/run_ab_codex.py --limit 20
-```
+## Layer C — Codex A/B
+Run identical cases:
+- baseline Codex;
+- Codex + `$arab-writer`;
+- same configured model;
+- same configured reasoning;
+- same task/input.
 
-## Layer C — hybrid scoring
-Use deterministic fidelity checks + blinded human review + optional LLM judge.
-See `evals/RUBRICS.md`.
+Record configured settings separately from observed runtime settings.
 
-## Layer D — external Arabic benchmarks
-Use licensed/imported subsets from established Arabic linguistic and writing-quality benchmarks. See `docs/BENCHMARKS.md`.
+## Layer D — human review
+Blind reviewers score:
+- fidelity;
+- instruction compliance;
+- grammar;
+- mechanics;
+- naturalness;
+- organization;
+- voice;
+- domain precision;
+- under-editing;
+- over-editing.
 
-## Release gate
-A new release should not claim quality improvement unless:
-- deterministic regressions pass;
-- A/B candidate does not materially worsen fidelity;
-- candidate wins or ties the baseline on predefined primary metrics;
-- a human-reviewed sample supports the conclusion.
+## Layer E — release gate
+A release-quality claim requires an empirical metrics file and must satisfy thresholds in `tools/release_gate.py`.
+
+No CI-only claim of writing superiority is permitted.

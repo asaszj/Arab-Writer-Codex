@@ -1,0 +1,16 @@
+{
+  "version": "1.3.0",
+  "cases": [
+    {"id":"mobily-financial-edit","domain":"financial-regulatory","task":"rewrite","locale":"msa-saudi","risk":"high","source_type":"real-world"},
+    {"id":"academic-claim-calibration","domain":"academic","task":"proofread","locale":"msa","risk":"high","source_type":"designed"},
+    {"id":"executive-board-memo","domain":"executive","task":"shorten","locale":"msa-saudi","risk":"elevated","source_type":"designed"},
+    {"id":"policy-modal-preservation","domain":"policy-legal","task":"rewrite","locale":"msa-saudi","risk":"high","source_type":"designed"},
+    {"id":"technical-spec-preservation","domain":"technical","task":"naturalize","locale":"msa","risk":"high","source_type":"designed"},
+    {"id":"marketing-naturalness","domain":"marketing","task":"naturalize","locale":"msa-saudi","risk":"standard","source_type":"designed"},
+    {"id":"saudi-professional-message","domain":"professional","task":"rewrite","locale":"saudi-professional","risk":"elevated","source_type":"real-world"},
+    {"id":"dialect-preservation","domain":"dialect","task":"voice-lock","locale":"saudi-dialectal","risk":"standard","source_type":"designed"},
+    {"id":"nahw-gec-subset","domain":"arabic-gec","task":"proofread","locale":"msa","risk":"standard","source_type":"external"},
+    {"id":"aralingbench-linguistic","domain":"arabic-linguistics","task":"proofread","locale":"msa","risk":"standard","source_type":"external"},
+    {"id":"long-document-consistency","domain":"document","task":"document","locale":"msa","risk":"high","source_type":"real-world"}
+  ]
+}

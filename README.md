@@ -1,50 +1,58 @@
 # Arab Writer for Codex
 
-**Arab Writer** is a Codex-native Arabic writing and editing skill focused on high-fidelity revision: better Arabic without silently changing facts, value relationships, modality, citations, tables, code, or author voice.
+**Arab Writer v1.3** is a Codex-native Arabic writing and editing skill built around one rule:
 
-It is intentionally **Codex-first**. This repository does not package a Claude skill or cross-agent compatibility layer.
+> Improve the writing without silently changing the evidence.
 
-## Why v1.2 is different
+It combines Arabic editing, context-aware fidelity checks, editorial-depth control, voice/locale preservation, long-document consistency, and reproducible evaluation.
 
-The skill does more than rewrite sentences. It uses a fidelity-first workflow:
+This repository is Codex-first.
 
-1. **Classify the writing task and risk level.**
-2. **Protect facts before editing**: names, dates, amounts, percentages, IDs, standards, citations, URLs, conditions, and claim strength.
-3. **Select only the relevant writing references.**
-4. **Edit at the lightest effective level.**
-5. **Run quality gates after editing.**
-6. **Use deterministic QA helpers for high-fidelity work when needed.**
+## What changed in v1.3
 
-This reduces a common failure mode in AI editing: producing smoother prose while silently changing factual or evidentiary meaning.
+v1.3 moves from keyword/window heuristics toward **context-aware relations and evidence-based edit decisions**:
 
-### v1.2 fidelity stack
+1. **Context-aware semantic sentinels** — distinguishes cases such as `قد أعلنت` from `قد تعلن`, and containment from guarantee language.
+2. **Fidelity Relation Graph** — protects `measure/entity → value → time/status/unit`, not just token presence.
+3. **Editorial Gain Gate** — a safe rewrite is retained only when its benefit justifies fidelity/voice/change cost.
+4. **Semantic Repetition v2** — combines lexical, n-gram and proposition signals and classifies likely duplicate vs elaboration/summary.
+5. **Numeral semantics vs presentation** — numeric value is protected; presentation can be normalized only under an explicit policy with semantic equivalence.
+6. **Voice tolerance bands** — does not blindly maximize similarity; acceptable drift can be justified by real clarity/correctness gain.
+7. **Boundary-aware locale guard** — avoids substring errors such as treating `مرة أخرى` as proof of dialect.
+8. **Persistent document ledger** — carries terms, acronyms and protected relations across chapters.
+9. **Schema-based bibliography audit** — missing metadata stays missing; no invented years/URLs/DOIs.
+10. **Run provenance** — configured model/reasoning are separated from actually observed runtime settings.
+11. **Benchmark matrix + release gates** — prevents a single Mobily-style case from becoming the whole evidence base.
+12. **Explainable edit trail** — paragraph-level changes can be reviewed with reasons/signals and required verification.
 
-Arab Writer now checks four distinct layers:
+## Core operating loop
 
-1. **Protected tokens** — dates, amounts, IDs, standards, citations, URLs.
-2. **Anchored facts** — values remain attached to the correct labels/entities.
-3. **Semantic sentinels** — negation, permission/obligation, causality, uncertainty, forecast/guarantee language.
-4. **Protected structures** — quotations, inline/fenced code, and Markdown table relationships.
+```text
+Route
+  ↓
+Risk
+  ↓
+Fidelity / document ledger
+  ↓
+Edit
+  ↓
+Language + fidelity audit
+  ↓
+Missed-opportunity review
+  ↓
+Adversarial regression review
+  ↓
+Return
+```
 
-It also includes an actual **Codex baseline-vs-skill A/B harness** under `evals/`. CI validates software; A/B evaluation measures writing impact.
+### Four verification passes
 
-## Capabilities
+- **Pass A — Edit**
+- **Pass B — Arabic + fidelity audit**
+- **Pass C — missed opportunities**
+- **Pass D — what became worse because of the edit?**
 
-- Arabic proofreading without unnecessary rewriting
-- Natural rewriting without generic "AI voice"
-- Voice-preserving editing
-- Shortening and expansion
-- Professional and executive communication
-- Academic and research editing
-- Financial and business writing
-- Policy, legal, and regulatory wording preservation
-- Marketing and social content
-- Technical and product documentation
-- Arabic/English translation polishing
-- Saudi/Gulf institutional register
-- Dialect-sensitive editing
-- RTL/Markdown/table preservation
-- Protected-token QA for numbers, dates, IDs, standards, URLs, and citations
+The fourth pass is specifically intended to reduce over-editing after v1.2.1 fixed much of the earlier under-editing.
 
 ## Codex-native structure
 
@@ -53,143 +61,129 @@ It also includes an actual **Codex baseline-vs-skill A/B harness** under `evals/
 ├── SKILL.md
 ├── agents/openai.yaml
 ├── references/
-│   ├── arabic-core.md
-│   ├── naturalness.md
-│   ├── fidelity-guard.md
-│   ├── voice-profile.md
-│   ├── document-mode.md
-│   └── domain references...
 └── scripts/
-    ├── protected_tokens.py
-    ├── anchored_facts.py
+    ├── fidelity_graph.py
     ├── semantic_sentinels.py
-    ├── structure_guard.py
-    ├── arabic_mechanical_lint.py
+    ├── numeral_policy.py
+    ├── editorial_gain.py
+    ├── semantic_repetition.py
     ├── voice_profile.py
+    ├── locale_guard.py
+    ├── document_ledger.py
+    ├── bibliography_schema.py
+    ├── edit_trail.py
+    ├── run_provenance.py
+    ├── gec_adjudicator.py
     └── qa_pair.py
 
 evals/
+├── benchmark_matrix.json
+├── benchmark_matrix.py
 ├── run_ab_codex.py
-└── RUBRICS.md
+└── ...
 
-tests/
-├── evals.jsonl
-└── deterministic regression tests
+tools/
+└── release_gate.py
 ```
 
-## Install in Codex
+## Install
 
-### Option A — Skill Installer
-
-In Codex, invoke:
+In Codex:
 
 ```text
 $skill-installer
 ```
 
-Then ask it to install the skill from:
+Install from:
 
 ```text
 https://github.com/asaszj/Arab-Writer-Codex/tree/main/.agents/skills/arab-writer
 ```
 
-### Option B — Personal skill
-
-Copy `.agents/skills/arab-writer` to:
+Or copy `.agents/skills/arab-writer` to:
 
 ```text
 $HOME/.agents/skills/arab-writer
 ```
 
-Codex loads personal skills from `$HOME/.agents/skills`.
-
-### Option C — Repository-scoped
-
-Clone this repository or copy `.agents/skills/arab-writer` into another repository's `.agents/skills/` directory.
-
-Codex scans repository-scoped `.agents/skills` locations automatically.
-
 ## Use
 
-Explicit:
-
 ```text
-$arab-writer راجع هذا الخطاب واجعله مهنيًا وطبيعيًا مع الحفاظ على الأرقام والتواريخ.
+$arab-writer
+راجع هذا الفصل تحريرياً على مستوى rewrite + naturalize + voice-lock مع High Fidelity.
 ```
 
-Implicit:
+Proofreading only:
 
 ```text
-دقق هذا النص العربي لغويًا فقط، ولا تعيد صياغته.
+$arab-writer
+دقق هذا النص لغويًا فقط. لا تعِد صياغة الجمل الصحيحة.
 ```
 
-Academic:
+High-fidelity financial/legal editing:
 
 ```text
-حرر هذه الفقرة أكاديميًا، وحافظ على المراجع وقوة الادعاءات كما هي.
+$arab-writer
+حرر النص مع الحفاظ على الأرقام وعلاقاتها بالفترات والبنود، وقوة الادعاء والشروط والاستثناءات.
 ```
 
-Executive:
+## Numeric policy
+
+Available policies:
+
+- `preserve-exact`
+- `normalize-arabic`
+- `normalize-western`
+- `document-consistent`
+
+Example:
 
 ```text
-حوّل هذه المذكرة إلى صيغة تنفيذية لمجلس الإدارة: القرار، الأثر، المخاطر، والتوصية.
+٢٥,١٩1
 ```
 
-Voice lock:
-
-```text
-حسّن النص لكن حافظ على أسلوبي ونبرة الكاتب قدر الإمكان.
-```
+may be normalized in presentation only when the semantic value is proven unchanged.
 
 ## High-fidelity QA
 
-For long or sensitive edits:
-
 ```bash
 python .agents/skills/arab-writer/scripts/qa_pair.py before.txt after.txt
+python .agents/skills/arab-writer/scripts/fidelity_graph.py before.txt after.txt
+python .agents/skills/arab-writer/scripts/editorial_gain.py before.txt after.txt
 ```
 
-The scripts report potential issues; they do not auto-correct or decide semantic intent.
+These scripts produce review signals, not automatic semantic proof.
 
-## Validate the skill
+## Evaluation
+
+Validate deterministic software behavior:
 
 ```bash
 python .agents/skills/arab-writer/scripts/validate_skill.py
 python -m unittest discover -s tests -v
+python evals/benchmark_matrix.py evals/benchmark_matrix.json
+python tools/release_gate.py --mode structural
 ```
 
-## Design principles
+Run Codex baseline-vs-skill evaluation:
 
-- User instructions outrank skill defaults.
-- Meaning outranks elegance.
-- Evidence outranks rhetorical strength.
-- Naturalness is a writing quality, not detector evasion.
-- Correct text should not be rewritten merely to make the edit look substantial.
-- High-stakes text requires stricter preservation than casual text.
-- References are loaded progressively to keep Codex context efficient.
+```bash
+python evals/run_ab_codex.py --model <model> --reasoning medium --limit 20
+```
 
-See [`docs/DESIGN.md`](docs/DESIGN.md) and [`docs/EVALUATION.md`](docs/EVALUATION.md).
+The benchmark records **configured** model/reasoning separately from **observed** runtime values. If runtime observation is unavailable, it stays `unknown`.
+
+## Evidence policy
+
+CI does **not** prove better writing.
+
+A quality claim requires multiple domains/tasks/locales, deterministic fidelity checks, Arabic/external benchmark evidence where licensed, and blind human review.
+
+See:
+- `docs/DESIGN.md`
+- `docs/EVALUATION.md`
+- `docs/V130_ACCEPTANCE.md`
 
 ## License
 
 MIT.
-
-## Evaluate v1.2 against Codex baseline
-
-```bash
-python evals/run_ab_codex.py --limit 20
-```
-
-See `docs/EVALUATION.md` and `evals/RUBRICS.md`.
-
-## v1.2 critical closures
-
-- two-pass Arabic linguistic audit rather than surface lint alone;
-- human-authored Nahw-Passage evaluation fixture and external benchmark adapters;
-- condition/exception and locale/register drift guards;
-- measurable voice drift;
-- long-document consistency checks;
-- Saudi pragmatic/register guidance;
-- first-class Codex plugin manifest and release packaging.
-
-See `docs/BENCHMARKS.md`, `docs/PLUGIN.md`, and `docs/RELEASE.md`.

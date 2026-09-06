@@ -1,18 +1,18 @@
-# Release Checklist v1.2
+# Release Checklist v1.3
 
-1. Update `VERSION` and `CHANGELOG.md`.
-2. Run deterministic gates:
+1. Update `VERSION`, plugin manifest and changelog.
+2. Run:
    ```bash
    python .agents/skills/arab-writer/scripts/validate_skill.py
    python tools/validate_plugin.py
    python -m unittest discover -s tests -v
+   python evals/benchmark_matrix.py evals/benchmark_matrix.json
+   python tools/release_gate.py --mode structural
    ```
-3. Review internal and external eval fixtures.
-4. Build both distributions:
+3. Build skill/plugin packages.
+4. For a writing-quality claim, produce an empirical metrics JSON from A/B + blind human review.
+5. Run:
    ```bash
-   python tools/package_skill.py
-   python tools/package_plugin.py
+   python tools/release_gate.py --mode empirical --metrics evals/results/release_metrics.json
    ```
-5. Run a clean Codex install smoke test.
-6. For a quality claim, run A/B and blinded human review; do not infer quality from CI.
-7. Tag `vX.Y.Z`. The release workflow builds versioned skill/plugin ZIPs and checksums.
+6. Do not tag a release as quality-improving if the empirical gate fails or was not run.

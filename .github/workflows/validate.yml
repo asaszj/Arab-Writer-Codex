@@ -20,6 +20,10 @@ jobs:
         run: python -m compileall -q .agents/skills/arab-writer/scripts evals tests tools
       - name: Run deterministic regression tests
         run: python -m unittest discover -s tests -v
+      - name: Validate benchmark matrix
+        run: python evals/benchmark_matrix.py evals/benchmark_matrix.json
+      - name: Run v1.3 structural release gate
+        run: python tools/release_gate.py --mode structural
       - name: Smoke composite fidelity QA
         run: python .agents/skills/arab-writer/scripts/qa_pair.py tests/fixtures/before.txt tests/fixtures/after.txt
       - name: Build distributions

@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Production readiness preflight
+        run: python tools/readiness_check.py
       - name: Validate skill structure
         run: python .agents/skills/arab-writer/scripts/validate_skill.py
       - name: Validate plugin manifest

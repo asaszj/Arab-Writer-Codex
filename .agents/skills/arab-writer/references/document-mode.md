@@ -1,39 +1,45 @@
-# Long-Document Mode v1.2
+# Long-Document Mode v1.3
 
-Use for reports, policies, research papers, manuals, proposals, books, and other multi-section artifacts.
+Use for books, reports, policies, research papers, manuals, proposals, and multi-file artifacts.
 
 ## Phase 1 — Inventory
 Capture:
-- document purpose/audience;
-- heading hierarchy;
-- defined terms and abbreviations;
-- recurring entities;
-- figures, tables, citations, standards;
-- key claims and decisions;
-- terminology choices;
-- voice/register.
+- purpose/audience;
+- headings/sections;
+- tables/figures;
+- references;
+- defined terms/acronyms;
+- protected numeric relations;
+- numeral convention;
+- style/voice expectations.
 
-Create a cross-section ledger before editing high-fidelity documents.
+## Phase 2 — Persistent ledger
+Create/update a document or book ledger. Carry it across sections instead of treating chunks as unrelated.
 
-## Phase 2 — Edit by section
-Edit one coherent section at a time. Carry the terminology and fidelity ledger forward. Do not reset decisions at chunk boundaries.
+Recommended fields:
+- term forms;
+- acronyms;
+- named entities;
+- relation graph nodes;
+- citation forms;
+- numeral policy;
+- unresolved ambiguities.
 
-## Phase 3 — Cross-section consistency
+Use `scripts/document_ledger.py` when plain-text extraction is available.
+
+## Phase 3 — Section editing
+Apply the requested mode and risk level. Preserve section-specific constraints.
+
+## Phase 4 — Cross-section consistency
 Check:
-- the same entity is named consistently;
-- acronyms are introduced and reused consistently;
-- recurring anchored facts do not silently conflict;
-- numbers/dates that should agree do agree;
-- recommendations do not contradict findings;
-- defined terms do not drift;
-- headings follow one hierarchy;
-- tone/voice does not drift between sections;
-- references/citations remain aligned.
+- contradictory numeric relations;
+- term drift;
+- acronym drift;
+- citation naming drift;
+- repeated explanations;
+- voice drift.
 
-When a recurring label legitimately has different values across periods, include the period in the anchor rather than treating it as a contradiction.
+## Phase 5 — Global QA
+Run fidelity, editorial gain, bibliography, voice/locale, and Pass D regression review.
 
-## Phase 4 — Global QA
-Run deterministic guards on the complete before/after document where possible, then review semantic findings. `scripts/document_consistency.py` supports repeated anchor conflicts, glossary drift, and acronym-definition drift.
-
-## Failure policy
-Do not “resolve” cross-section conflicts by choosing one value. Surface the conflict unless the source clearly establishes which value is authoritative.
+For explainable review, generate a paragraph-level trail with `scripts/edit_trail.py`.

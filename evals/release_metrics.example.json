@@ -1,0 +1,8 @@
+{
+  "critical_fidelity_regressions": 0,
+  "arabic_correctness_delta": 0.0,
+  "human_preference_win_rate": 0.55,
+  "overediting_regression_rate": 0.1,
+  "false_positive_rate": 0.1,
+  "notes": "Example schema only. Replace with measured values from A/B + blind human review."
+}
